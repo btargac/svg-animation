@@ -1,0 +1,25 @@
+{
+  "name": "shape-animation",
+  "version": "1.0.0",
+  "description": "animejs based clipped shape svg animation",
+  "author": "Burak Targaç<btargac@gmail.com>",
+  "license": "MIT",
+  "private": false,
+  "dependencies": {
+    "animejs": "^3.2.1",
+    "normalize.css": "^8.0.1"
+  },
+  "devDependencies": {
+    "css-loader": "^5.2.5",
+    "html-webpack-plugin": "^5.3.1",
+    "style-loader": "^2.0.0",
+    "webpack": "^5.37.1",
+    "webpack-cli": "^4.7.0",
+    "webpack-dev-server": "^3.11.2"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "webpack",
+    "start": "webpack serve --open"
+  }
+}

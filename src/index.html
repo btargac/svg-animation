@@ -1,0 +1,215 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Clipped Shape Animation</title>
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@200;500;700&display=swap" rel="stylesheet">
+</head>
+<body>
+<main class="main-container">
+    <header>
+        <h1>Animating SVG with anime JS</h1>
+    </header>
+    <article class="article-content">
+        <p>
+            Last weekend I was trying to read some of the articles that I have bookmarked a long time ago. Like
+            many of us (developers) I can't find spare time to deeply learn what the article tries to tell. This time I
+            was lucky enough that I could accomplish my little goal which was to make a replication of the animations
+            shown on the article. I had a beer while reading and following the very
+            definitive<a href="https://varun.ca/clip-path/" target="_blank" rel="noopener">article</a> by Varun Vachhar.
+        </p>
+        <svg class="squiggle animated-svg" viewBox="0 50 800 500">
+            <defs>
+                <clipPath id="left-slice-mask">
+                    <path d="M 441.6 405 A 113 113 0 1 1 441.6 195 Z"/>
+                </clipPath>
+                <clipPath id="right-slice-mask">
+                    <path d="M 441.6 195  A 113 113 0 0 1 441.6 405 Z"/>
+                </clipPath>
+            </defs>
+
+            <g>
+                <!-- Arc Strokes -->
+                <path class="js-left-slice" d="M 441.6 405 A 113 113 0 1 1 441.6 195 Z" fill="none"/>
+
+                <path class="js-right-slice" d="M 441.6 195  A 113 113 0 0 1 441.6 405 Z" fill="none"/>
+
+                <!-- Arc Fills -->
+                <rect id="js-left-fill" x="441" y="187" width="154" height="226" clip-path="url(#left-slice-mask)"/>
+
+                <rect id="js-right-fill" x="441.6" y="187" width="72" height="226" clip-path="url(#right-slice-mask)"/>
+
+                <!-- Burst ball -->
+                <circle class="burst" id="js-burst" cx="348" cy="300" r="75"/>
+            </g>
+        </svg>
+        <p>
+            I was always interested in animating charts, numbers, images and shapes to catch users' attraction while
+            navigating the page, which helped telling them what has been updated and leading them to a specific area
+            that needs attention. But never had enough time to master SVGs' inner
+            <span class="highlight-text">clipPath, filter, defs, path and d</span> tags and build SVG based animations
+            from scratch at all.
+        </p>
+        <p>
+            Before trying to achieve what the author has done with these stuff I decided to visit SVG documentation
+            on MDN and learned how to create curves, arcs and simple shape like <span
+                class="highlight-text">ellipse</span>.
+            <br>
+            <br>
+            If you want to go that way as well, here you can reach those long and mind blowing documentations.
+        </p>
+        <ul class="link-list">
+            <li><a href="https://developer.mozilla.org/en-US/docs/Web/SVG/Tutorial/Paths">Paths on MDN</a></li>
+            <li><a href="https://developer.mozilla.org/en-US/docs/Web/SVG/Element/polyline">Polyline on MDN</a></li>
+            <li><a href="https://developer.mozilla.org/en-US/docs/Web/SVG/Tutorial/Basic_Shapes">Basic Shapes on MDN</a>
+            </li>
+        </ul>
+        <p>
+            After reading and making small experiments related to those stuff from MDN I felt really comfortable with
+            the words and terms used on the article. I mean at least enough to replicate what the author has done :)
+        </p>
+        <p>So lets jump in to the code and approaches on how to accomplish the basic animation shown above.
+            <br>
+            <br>
+            First start with drawing basic shapes by using arcs. The below code draws two closed
+            semi-circle like shapes in SVG. Below you'll see the output of paths, but remember animation of the stroke
+            is handled by animejs javascript library. This is just for visualising what these paths look like on the
+            screen.
+        </p>
+        <pre class="code-sample">
+            <code class="code-sample code-sample--comment">&lt;!--
+    Move to the starting point then draw an arc to the end point and close
+    the shape by going back to the starting point
+    M start_x start_y A rx ry x-axis-rotation large-arc-flag sweep-flag end_x end_y Z
+--&gt;
+            </code>
+            <code class="code-sample">&lt;path d="M 441.6 405 A 113 113 0 1 1 441.6 195 Z"/&gt;</code>
+            <code class="code-sample">&lt;path d="M 441.6 195 A 113 113 0 0 1 441.6 405 Z/&gt;</code>
+        </pre>
+        <iframe height="500" scrolling="no" title="SA 15 Process 1"
+                src="//codepen.io/winkerVSbecks/embed/aVOaqY/?height=500&amp;theme-id=26435&amp;default-tab=result&amp;embed-version=2"
+                frameborder="no" style="width:100%">
+            See the Pen <a href="http://codepen.io/winkerVSbecks/pen/aVOaqY">SA 15 Process 1</a>
+            by winkerVSbecks (<a href="http://codepen.io/winkerVSbecks">@winkerVSbecks</a>) on
+            <a href="https://codepen.io">CodePen</a>.
+        </iframe>
+        <p>
+            These paths create the outline. The sliding fill inside them was created using clipped rectangles. For the
+            <code class="code-sample">clipPath</code> we use the same paths as the outline and then apply them to the
+            rectangles using the <code class="code-sample">clip-path</code> attribute.
+        </p>
+        <pre class="code-sample">
+            <code class="code-sample">&lt;defs&gt;
+  &lt;clipPath id="left-slice-mask"&gt;
+    &lt;path d="M 441.6 405 A 113 113 0 1 1 441.6 195 Z" fill="#fff" /&gt;
+  &lt;/clipPath&gt;
+  &lt;clipPath id="right-slice-mask"&gt;
+    &lt;path d="M 441.6 195  A 113 113 0 0 1 441.6 405 Z" fill="#fff" /&gt;
+  &lt;/clipPath&gt;
+&lt;/defs&gt;</code>
+        </pre>
+        <pre class="code-sample">
+            <code class="code-sample">
+&lt;rect
+    class="js-right-fill"
+    x="441.6"
+    y="187"
+    width="72"
+    height="226"
+    clip-path="url(#right-slice-mask)"
+/&gt;
+            </code>
+        </pre>
+        <p>To slide the fill in-and-out lets animate the <code class="code-sample">x</code> value using animejs. The
+            <code class="code-sample">clipPath</code> remains static. It's only the rectangles that are moving
+        </p>
+        <iframe height="500" scrolling="no" title="SA 15 Process 2"
+                src="//codepen.io/winkerVSbecks/embed/XzbyQj/?height=500&amp;theme-id=26435&amp;default-tab=result&amp;embed-version=2"
+                frameborder="no" style="width:100%">See the Pen <a
+                href="http://codepen.io/winkerVSbecks/pen/XzbyQj">SA 15 Process 2</a> by winkerVSbecks (<a
+                href="http://codepen.io/winkerVSbecks">@winkerVSbecks</a>) on <a href="https://codepen.io">CodePen</a>.
+        </iframe>
+        <p>The combined shape is moved up-down and left-right by animating <code class="code-sample">translateX</code>
+            and <code class="code-sample">translateY</code>. We apply the same animation at the same time to both the
+            arc slice and clipped rectangle. Note, you do not need to animate the position of the
+            <code class="code-sample">clipPath</code>.
+        </p>
+        <iframe height="500" scrolling="no" title="SA 15 Process 5"
+                src="//codepen.io/winkerVSbecks/embed/pdJGOZ/?height=500&amp;theme-id=26435&amp;default-tab=result&amp;embed-version=2"
+                frameborder="no" style="width:100%">See the Pen <a
+                href="http://codepen.io/winkerVSbecks/pen/pdJGOZ">SA 15 Process 5</a> by winkerVSbecks (<a
+                href="http://codepen.io/winkerVSbecks">@winkerVSbecks</a>) on <a href="https://codepen.io">CodePen</a>.
+        </iframe>
+        <p>The little circle that burst out. Actually that's just a circle. At the appropriate time we hide the left
+            slice
+            and rectangle and show the circle instead. The circle scales down as it moves to the left and then stretches
+            — using <code class="code-sample">scaleX</code> — as it moves back to the right.
+        </p>
+        <iframe height="500" scrolling="no" title="SA 15 Process 3"
+                src="//codepen.io/winkerVSbecks/embed/mqJaLY/?height=500&amp;theme-id=26435&amp;default-tab=result&amp;embed-version=2"
+                frameborder="no" style="width:100%">See the Pen <a
+                href="http://codepen.io/winkerVSbecks/pen/mqJaLY">SA 15 Process 3</a> by winkerVSbecks (<a
+                href="http://codepen.io/winkerVSbecks">@winkerVSbecks</a>) on <a href="https://codepen.io">CodePen</a>.
+        </iframe>
+        <p>
+            The squirmy line effect that every shape has is known as
+            <a href="https://css-tricks.com/squigglevision-in-css-and-svg" target="_blank" rel="noopener noreferrer">squigglevision</a>.
+            We used the code from <a href="https://tympanus.net/codrops/2016/03/21/animated-animals-css-svg"
+                                     target="_blank" rel="noopener noreferrer">tympanus</a>
+            example.
+        </p>
+        <iframe height="500" scrolling="no" title="SA 15 Process 4"
+                src="//codepen.io/winkerVSbecks/embed/Nwqoav/?height=500&amp;theme-id=26435&amp;default-tab=css,result&amp;embed-version=2"
+                frameborder="no" style="width:100%">See the Pen <a
+                href="http://codepen.io/winkerVSbecks/pen/Nwqoav">SA 15 Process 4</a> by winkerVSbecks (<a
+                href="http://codepen.io/winkerVSbecks">@winkerVSbecks</a>) on <a href="https://codepen.io">CodePen</a>.
+        </iframe>
+        <p>The rest is all about matching the movement and timing of the original animation.</p>
+        <p>Varun has more examples of animating clipped shapes. You can find more animation related stuff and posts
+            on his page.
+        </p>
+        <p><strong>These can be good to bear in mind;</strong>
+            <br>
+            <br>
+            By the time Varun has written the original post animejs version 2 or even an older version was around,
+            but when I tried to achieve the same output with animejs version 3 timeline method has changed, each
+            animation added to timeline starts after the previous one sequentially, but on version 2 offsets were
+            handled differently. So I had to update some javascript codes in order to pass the offset values without the
+            help of <code class="code-sample">at()</code> method.
+            <br>
+            <br>
+            Instead I passed the animation objects and offset
+            values as function arguments directly to <code class="code-sample">timeline.add(aminationObject, offsetValue)</code>
+        </p>
+    </article>
+    <svg xmlns="http://www.w3.org/2000/svg" version="1.1" style="display:none">
+        <defs>
+            <filter id="squiggly-0">
+                <feTurbulence baseFrequency="0.02" numOctaves="3" result="noise" seed="0"/>
+                <feDisplacementMap in="SourceGraphic" in2="noise" scale="2"/>
+            </filter>
+            <filter id="squiggly-1">
+                <feTurbulence baseFrequency="0.02" numOctaves="3" result="noise" seed="1"/>
+                <feDisplacementMap in="SourceGraphic" in2="noise" scale="3"/>
+            </filter>
+            <filter id="squiggly-2">
+                <feTurbulence baseFrequency="0.02" numOctaves="3" result="noise" seed="2"/>
+                <feDisplacementMap in="SourceGraphic" in2="noise" scale="2"/>
+            </filter>
+            <filter id="squiggly-3">
+                <feTurbulence baseFrequency="0.02" numOctaves="3" result="noise" seed="3"/>
+                <feDisplacementMap in="SourceGraphic" in2="noise" scale="3"/>
+            </filter>
+            <filter id="squiggly-4">
+                <feTurbulence baseFrequency="0.02" numOctaves="3" result="noise" seed="4"/>
+                <feDisplacementMap in="SourceGraphic" in2="noise" scale="1"/>
+            </filter>
+        </defs>
+    </svg>
+</main>
+</body>
+</html>

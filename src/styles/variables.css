@@ -1,0 +1,20 @@
+:root {
+    font-size: 10px;
+
+    /* Typography */
+    --typography-content: 200 2rem / 1.5 'Inter', sans-serif;
+    --typography-highlight: 400 2rem / 1.5 'Inter', sans-serif;
+    --typography-code: 200 1.6rem / 1.4 Consolas, monaco, monospace;
+
+    /* Color palette */
+    --white: hsla(0, 0%, 100%, 1);
+    --grey: hsla(0, 0%, 50%, 1);
+
+    --dark-primary: hsla(252, 12%, 8%, 1);
+    --dark-secondary: hsla(252, 12%, 12%, 1);
+    --dark-thirtarry: hsla(252, 12%, 16%, 1);
+
+    /* Backgrounds */
+    --bg-body: var(--dark-primary);
+    --bg-code-block: var(--dark-thirtarry);
+}

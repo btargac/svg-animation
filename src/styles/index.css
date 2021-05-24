@@ -1,0 +1,122 @@
+@import '~normalize.css';
+@import 'variables.css';
+
+html,
+body {
+    font-family: 'Inter', sans-serif;
+}
+
+body {
+    background-color: var(--bg-body);
+    color: var(--white);
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    font-weight: 700;
+}
+
+h1 {
+    font-size: 3rem;
+}
+
+ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+a {
+    text-decoration: none;
+    font: var(--typography-highlight);
+}
+
+a:visited {
+  color: inherit;
+}
+
+.article-content {
+    font: var(--typography-content);
+    text-align: left;
+}
+
+.highlight-text {
+    font: var(--typography-highlight);
+}
+
+pre.code-sample {
+    background: var(--bg-code-block);
+    display: block;
+    direction: ltr;
+    font: var(--typography-code);
+    text-align: left;
+    padding: 1rem;
+    word-break: normal;
+    tab-size: 4;
+    hyphens: none;
+    white-space: pre-line;
+}
+
+code.code-sample {
+    direction: ltr;
+    font: var(--typography-code);
+    hyphens: none;
+    tab-size: 4;
+    text-align: left;
+    word-spacing: normal;
+    white-space: pre;
+}
+
+code.code-sample--comment {
+    color: var(--grey);
+}
+
+.squiggle {
+    animation: squigglevision 0.3s infinite;
+}
+
+.animated-svg {
+    display: block;
+    width: 100%;
+    max-width: 80rem;
+    margin: auto auto;
+    fill: rebeccapurple;
+    stroke: #EEB65A;
+    stroke-width: 2px;
+}
+
+.burst {
+    opacity: 0;
+}
+
+/**
+ * from: https://tympanus.net/codrops/2016/03/21/animated-animals-css-svg/
+ */
+@keyframes squigglevision {
+    0% {
+        filter: url("#squiggly-0");
+    }
+    25% {
+        filter: url("#squiggly-1");
+    }
+    50% {
+        filter: url("#squiggly-2");
+    }
+    75% {
+        filter: url("#squiggly-3");
+    }
+    100% {
+        filter: url("#squiggly-4");
+    }
+}
+
+.main-container {
+    margin: 2rem auto;
+    width: auto;
+    max-width: 1020px;
+    text-align: center;
+}
